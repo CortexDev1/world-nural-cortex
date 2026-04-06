@@ -56,12 +56,12 @@ function getNodeColor(node: SimNode, colorBy: GraphSettingsValues['colorBy']): s
   if (colorBy === 'none') return '#666666';
   if (colorBy === 'type') {
     const typeColors: Record<GraphNode['type'], string> = {
-      skill: '#C9A84C',
-      agent: '#4ADE80',
-      report: '#4A9EFF',
-      course: '#A78BFA',
-      note: '#F59E0B',
-      lecture: '#10B981',
+      skill: '#B8976A',    // bronze (matches fashion/warm)
+      agent: '#7BA686',    // sage
+      report: '#6B8FBF',   // steel blue
+      course: '#9B85B3',   // lavender
+      note: '#C4856A',     // terracotta
+      lecture: '#6A9BA6',  // teal
     };
     return typeColors[node.type];
   }
@@ -215,15 +215,16 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
       defs
         .append('marker')
         .attr('id', 'arrowhead')
-        .attr('viewBox', '0 -4 8 8')
+        .attr('viewBox', '0 -3 6 6')
         .attr('refX', 14)
         .attr('refY', 0)
-        .attr('markerWidth', 6)
-        .attr('markerHeight', 6)
+        .attr('markerWidth', 4)
+        .attr('markerHeight', 4)
         .attr('orient', 'auto')
         .append('path')
-        .attr('d', 'M0,-4L8,0L0,4')
-        .attr('fill', '#555');
+        .attr('d', 'M0,-3L6,0L0,3')
+        .attr('fill', '#555')
+        .attr('opacity', 0.4);
 
       // Background
       svg.append('rect').attr('width', w).attr('height', h).attr('fill', '#202020');
@@ -259,8 +260,8 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .selectAll<SVGLineElement, SimEdge>('line')
         .data(simEdges)
         .join('line')
-        .attr('stroke', '#555555')
-        .attr('stroke-opacity', 0.3)
+        .attr('stroke', '#4a4a4a')
+        .attr('stroke-opacity', 0.15)
         .attr('stroke-width', (d) => Math.max(0.3, d.weight * 0.15 * s.linkThickness))
         .attr('marker-end', s.showArrows ? 'url(#arrowhead)' : null);
       linkSelRef.current = linkSel;
@@ -322,16 +323,16 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
             .attr('stroke', (l) => {
               const src = typeof l.source === 'object' ? (l.source as SimNode).id : String(l.source);
               const tgt = typeof l.target === 'object' ? (l.target as SimNode).id : String(l.target);
-              return src === d.id || tgt === d.id ? '#999999' : '#555555';
+              return src === d.id || tgt === d.id ? '#888888' : '#4a4a4a';
             })
             .attr('stroke-opacity', (l) => {
               const src = typeof l.source === 'object' ? (l.source as SimNode).id : String(l.source);
               const tgt = typeof l.target === 'object' ? (l.target as SimNode).id : String(l.target);
-              return src === d.id || tgt === d.id ? 0.8 : 0.05;
+              return src === d.id || tgt === d.id ? 0.6 : 0.03;
             });
 
           nodeSel.style('opacity', (n) =>
-            n.id === d.id || connectedIds.has(n.id) ? '1' : '0.15',
+            n.id === d.id || connectedIds.has(n.id) ? '1' : '0.12',
           );
           const visLabels = currentZoomRef.current >= curSettings.textFadeThreshold;
           labelSel.style('opacity', (n) => {
@@ -363,7 +364,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
             .attr('stroke', '#202020')
             .attr('stroke-width', 0.5);
 
-          linkSel.attr('stroke', '#555555').attr('stroke-opacity', 0.3);
+          linkSel.attr('stroke', '#4a4a4a').attr('stroke-opacity', 0.15);
 
           if (searchQueryRef.current.trim()) {
             applySearchHighlight(searchQueryRef.current);
@@ -375,9 +376,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
           if (tooltipEl) tooltipEl.style.display = 'none';
         })
         .on('click', (_event: MouseEvent, d: SimNode) => {
-          if (d.type === 'skill') {
-            window.location.href = `/article/${d.id}`;
-          }
+          onNodeSelect?.(nodes.find((n) => n.id === d.id) ?? null);
         });
 
       // Drag

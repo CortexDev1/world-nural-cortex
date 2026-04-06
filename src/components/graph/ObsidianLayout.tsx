@@ -5,6 +5,7 @@ import type { GraphNode, GraphEdge } from '@/lib/types';
 import { KnowledgeGraph, type KnowledgeGraphHandle } from './KnowledgeGraph';
 import { GraphSettings, DEFAULT_SETTINGS, type GraphSettingsValues } from './GraphSettings';
 import { NodeList } from './NodeList';
+import { NodeDetailPane } from './NodeDetailPane';
 
 interface ObsidianLayoutProps {
   nodes: GraphNode[];
@@ -76,6 +77,7 @@ export function ObsidianLayout({ nodes, edges }: ObsidianLayoutProps) {
   const [settings, setSettings] = useState<GraphSettingsValues>(DEFAULT_SETTINGS);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [detailNode, setDetailNode] = useState<GraphNode | null>(null);
   const graphRef = useRef<KnowledgeGraphHandle>(null);
 
   const handleSettingsChange = useCallback((patch: Partial<GraphSettingsValues>) => {
@@ -92,6 +94,7 @@ export function ObsidianLayout({ nodes, edges }: ObsidianLayoutProps) {
 
   const handleNodeClick = useCallback((node: GraphNode) => {
     setSelectedNodeId(node.id);
+    setDetailNode(node);
     graphRef.current?.centerOnNode(node.id);
   }, []);
 
@@ -190,8 +193,28 @@ export function ObsidianLayout({ nodes, edges }: ObsidianLayoutProps) {
             nodes={nodes}
             edges={edges}
             settings={settings}
-            onNodeSelect={(node) => setSelectedNodeId(node?.id ?? null)}
+            onNodeSelect={(node) => {
+              if (node) {
+                setSelectedNodeId(node.id);
+                setDetailNode(node);
+              }
+            }}
           />
+          {detailNode && (
+            <NodeDetailPane
+              node={detailNode}
+              allNodes={nodes}
+              allEdges={edges}
+              onClose={() => setDetailNode(null)}
+              onNavigate={(nodeId) => {
+                const target = nodes.find(n => n.id === nodeId);
+                if (target) {
+                  setDetailNode(target);
+                  graphRef.current?.centerOnNode(nodeId);
+                }
+              }}
+            />
+          )}
           {!rightOpen && (
             <button
               className="obsidian-panel-reopen obsidian-panel-reopen-right"
