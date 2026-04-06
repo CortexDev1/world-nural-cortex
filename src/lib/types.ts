@@ -93,13 +93,13 @@ export type Domain =
   | 'meta';
 
 export const DOMAIN_COLORS: Record<Domain, string> = {
-  ai: '#5B9BD5',         // sapphire blue
-  fashion: '#D4A853',    // rich gold
-  academic: '#5BB88C',   // emerald
-  business: '#9678B8',   // amethyst
-  career: '#D4845A',     // amber
-  engineering: '#4DBABA', // aquamarine
-  meta: '#B87898',       // rose quartz
+  ai: '#4EA8FF',         // Vega blue
+  fashion: '#FFB347',    // Arcturus gold
+  academic: '#50E3A0',   // Aurora green
+  business: '#B17EF5',   // Nebula violet
+  career: '#FF7B6B',     // Mars coral
+  engineering: '#47D4E8', // Rigel cyan
+  meta: '#E878B8',       // Orion pink
 };
 
 export const DOMAIN_LABELS: Record<Domain, string> = {

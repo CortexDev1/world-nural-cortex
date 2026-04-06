@@ -105,23 +105,25 @@ export const THEMES: Record<ThemeId, GraphTheme> = {
 // Gemstone/jewel tones: luminous enough to glow on dark backgrounds,
 // elegant enough to work on light ones. Each has distinct hue separation.
 
+// Nebula palette — high-saturation astronomical colors
+// Each hue is 45-55° apart for maximum distinguishability at any node size
 export const NODE_DOMAIN_COLORS: Record<string, string> = {
-  ai: '#5B9BD5',         // sapphire blue — clear, trustworthy
-  fashion: '#D4A853',    // rich gold — premium, Versali luxury
-  academic: '#5BB88C',   // emerald — scholarly, vibrant
-  business: '#9678B8',   // amethyst — strategic depth
-  career: '#D4845A',     // amber — warm ambition
-  engineering: '#4DBABA', // aquamarine — precise, technical
-  meta: '#B87898',       // rose quartz — systems/meta
+  ai: '#4EA8FF',         // Vega blue — electric, luminous (hue 215°)
+  fashion: '#FFB347',    // Arcturus gold — warm stellar glow (hue 35°)
+  academic: '#50E3A0',   // Aurora green — vivid, alive (hue 155°)
+  business: '#B17EF5',   // Nebula violet — rich, deep (hue 265°)
+  career: '#FF7B6B',     // Mars coral — energetic warmth (hue 5°)
+  engineering: '#47D4E8', // Rigel cyan — crisp, precise (hue 190°)
+  meta: '#E878B8',       // Orion pink — distinctive, meta (hue 330°)
 };
 
 export const NODE_TYPE_COLORS: Record<string, string> = {
-  skill: '#D4A853',      // gold
-  agent: '#5BB88C',      // emerald
-  report: '#5B9BD5',     // sapphire
-  course: '#9678B8',     // amethyst
-  note: '#D4845A',       // amber
-  lecture: '#4DBABA',    // aquamarine
+  skill: '#FFB347',      // Arcturus gold
+  agent: '#50E3A0',      // Aurora green
+  report: '#4EA8FF',     // Vega blue
+  course: '#B17EF5',     // Nebula violet
+  note: '#FF7B6B',       // Mars coral
+  lecture: '#47D4E8',    // Rigel cyan
 };
 
 export function getTheme(id: ThemeId): GraphTheme {

@@ -10,13 +10,13 @@
   --color-glass: rgba(26, 22, 18, 0.6);
   --color-glass-border: rgba(201, 168, 76, 0.15);
 
-  --color-domain-ai: #5B9BD5;
-  --color-domain-fashion: #D4A853;
-  --color-domain-academic: #5BB88C;
-  --color-domain-business: #9678B8;
-  --color-domain-career: #D4845A;
-  --color-domain-engineering: #4DBABA;
-  --color-domain-meta: #B87898;
+  --color-domain-ai: #4EA8FF;
+  --color-domain-fashion: #FFB347;
+  --color-domain-academic: #50E3A0;
+  --color-domain-business: #B17EF5;
+  --color-domain-career: #FF7B6B;
+  --color-domain-engineering: #47D4E8;
+  --color-domain-meta: #E878B8;
 
   --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
