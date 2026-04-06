@@ -33,9 +33,23 @@ interface SimEdge extends d3.SimulationLinkDatum<SimNode> {
   reason: string;
 }
 
-function getNodeRadius(connections: number, sizeMultiplier: number): number {
-  const base = Math.max(3, Math.min(8, 3 + connections * 0.3));
-  return base * (sizeMultiplier / 4);
+/** Type-based weight: structural "root" nodes get a size bonus */
+const TYPE_WEIGHT: Record<GraphNode['type'], number> = {
+  course: 1.6,    // courses are root hubs
+  agent: 1.3,     // agents are structural nodes
+  skill: 1.0,     // default
+  report: 0.85,   // reports are leaf-ish
+  note: 1.0,      // notes vary — connections drive their size
+  lecture: 0.75,   // lectures are leaves under courses
+};
+
+function getNodeRadius(connections: number, sizeMultiplier: number, type?: GraphNode['type']): number {
+  // Logarithmic scale: tiny orphans (2.5px) to mega-hubs (22px)
+  // log(1)=0 → base 2.5,  log(150)≈5 → base ~17
+  const logBase = 2.5 + Math.log1p(connections) * 2.9;
+  const clamped = Math.max(2.5, Math.min(22, logBase));
+  const typeBonus = type ? (TYPE_WEIGHT[type] ?? 1.0) : 1.0;
+  return clamped * typeBonus * (sizeMultiplier / 4);
 }
 
 function getNodeColor(node: SimNode, colorBy: GraphSettingsValues['colorBy']): string {
@@ -257,7 +271,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .selectAll<SVGCircleElement, SimNode>('circle')
         .data(simNodes)
         .join('circle')
-        .attr('r', (d) => getNodeRadius(d.connections, s.nodeSize))
+        .attr('r', (d) => getNodeRadius(d.connections, s.nodeSize, d.type))
         .attr('fill', (d) => getNodeColor(d, s.colorBy))
         .attr('stroke', '#202020')
         .attr('stroke-width', 0.5)
@@ -284,7 +298,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
       nodeSel
         .on('mouseenter', function (event: MouseEvent, d: SimNode) {
           const curSettings = settingsRef.current;
-          const r = getNodeRadius(d.connections, curSettings.nodeSize);
+          const r = getNodeRadius(d.connections, curSettings.nodeSize, d.type);
 
           d3.select(this)
             .raise()
@@ -341,7 +355,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         })
         .on('mouseleave', function (_event: MouseEvent, d: SimNode) {
           const curSettings = settingsRef.current;
-          const r = getNodeRadius(d.connections, curSettings.nodeSize);
+          const r = getNodeRadius(d.connections, curSettings.nodeSize, d.type);
           d3.select(this)
             .transition()
             .duration(120)
@@ -408,7 +422,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
           'collide',
           d3
             .forceCollide<SimNode>()
-            .radius((d) => getNodeRadius(d.connections, s.nodeSize) + 2),
+            .radius((d) => getNodeRadius(d.connections, s.nodeSize, d.type) + 2),
         )
         .alphaDecay(0.02)
         .velocityDecay(0.4);
@@ -425,7 +439,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         nodeSel.attr('cx', (d) => d.x ?? 0).attr('cy', (d) => d.y ?? 0);
 
         labelSel
-          .attr('x', (d) => (d.x ?? 0) + getNodeRadius(d.connections, settingsRef.current.nodeSize) + 4)
+          .attr('x', (d) => (d.x ?? 0) + getNodeRadius(d.connections, settingsRef.current.nodeSize, d.type) + 4)
           .attr('y', (d) => (d.y ?? 0) + 3);
       });
 
@@ -474,7 +488,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
 
       const nodeSel = nodeSelRef.current;
       if (nodeSel) {
-        nodeSel.attr('r', (d) => getNodeRadius(d.connections, settings.nodeSize));
+        nodeSel.attr('r', (d) => getNodeRadius(d.connections, settings.nodeSize, d.type));
         nodeSel.attr('fill', (d) => getNodeColor(d, settings.colorBy));
       }
 
