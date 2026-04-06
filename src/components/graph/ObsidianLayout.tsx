@@ -139,6 +139,32 @@ export function ObsidianLayout({ nodes, edges }: ObsidianLayoutProps) {
         '--hover-bg': theme.hoverBg,
       } as React.CSSProperties}
     >
+      {/* Tab bar */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        height: 32,
+        background: '#080c18',
+        borderBottom: '1px solid var(--panel-border)',
+        paddingLeft: 8,
+        flexShrink: 0,
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '4px 12px',
+          background: 'var(--panel-bg)',
+          borderRadius: '6px 6px 0 0',
+          fontSize: 12,
+          color: 'var(--text-primary)',
+        }}>
+          <span>Graph view</span>
+          <button style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 14, lineHeight: 1, padding: '0 2px' }}>×</button>
+        </div>
+        <button style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16, marginLeft: 4, lineHeight: 1 }}>+</button>
+      </div>
+
       {/* Top bar */}
       <div className="obsidian-topbar">
         <span className="obsidian-topbar-title">Graph View</span>

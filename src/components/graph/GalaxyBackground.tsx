@@ -15,6 +15,15 @@ interface GalaxyConfig {
 }
 
 const GALAXY_CONFIGS: Record<ThemeId, GalaxyConfig> = {
+  cosmos: {
+    bgColor: 0x0a0e1a,
+    coreColor: 0xc8962a,
+    nebulaColor1: 0x0e1830,
+    nebulaColor2: 0x081020,
+    starColor: 0x8090c0,
+    spiralColors: [0x4a90ff, 0xe8b84a, 0x3dd68c, 0x9070e0, 0xe05050, 0x40d8e0, 0xe060a0],
+    particleOpacity: 0.5,
+  },
   dark: {
     bgColor: 0x0a0a12,
     coreColor: 0xffe8cc,

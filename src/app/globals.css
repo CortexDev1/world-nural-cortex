@@ -10,13 +10,13 @@
   --color-glass: rgba(26, 22, 18, 0.6);
   --color-glass-border: rgba(201, 168, 76, 0.15);
 
-  --color-domain-ai: #4EA8FF;
-  --color-domain-fashion: #FFB347;
-  --color-domain-academic: #50E3A0;
-  --color-domain-business: #B17EF5;
-  --color-domain-career: #FF7B6B;
-  --color-domain-engineering: #47D4E8;
-  --color-domain-meta: #E878B8;
+  --color-domain-ai: #4a90ff;
+  --color-domain-fashion: #e8b84a;
+  --color-domain-academic: #3dd68c;
+  --color-domain-business: #9070e0;
+  --color-domain-career: #e05050;
+  --color-domain-engineering: #40d8e0;
+  --color-domain-meta: #e060a0;
 
   --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
@@ -213,8 +213,8 @@ body {
 }
 
 .obsidian-iconbtn-active {
-  color: #C9A84C;
-  background: rgba(201, 168, 76, 0.08);
+  color: #4a90d9;
+  background: rgba(74, 144, 217, 0.08);
 }
 
 /* Right strip */
@@ -396,20 +396,20 @@ body {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #C9A84C;
+  background: #4a90d9;
   cursor: pointer;
   transition: background 0.1s;
 }
 
 .obsidian-slider::-webkit-slider-thumb:hover {
-  background: #e8d48a;
+  background: #6aacf0;
 }
 
 .obsidian-slider::-moz-range-thumb {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #C9A84C;
+  background: #4a90d9;
   border: none;
   cursor: pointer;
 }
@@ -460,12 +460,12 @@ body {
 }
 
 .obsidian-toggle-on {
-  background: rgba(201, 168, 76, 0.25);
+  background: rgba(74, 144, 217, 0.25);
 }
 
 .obsidian-toggle-on::after {
   left: 16px;
-  background: #C9A84C;
+  background: #4a90d9;
 }
 
 .obsidian-toggle-row {
@@ -562,8 +562,8 @@ body {
 }
 
 .obsidian-node-active {
-  background: rgba(201, 168, 76, 0.08);
-  color: #C9A84C;
+  background: rgba(74, 144, 217, 0.08);
+  color: #4a90d9;
 }
 
 .obsidian-node-dot {
@@ -630,9 +630,9 @@ body {
 }
 
 .obsidian-radio-active {
-  background: rgba(201, 168, 76, 0.12);
-  border-color: rgba(201, 168, 76, 0.4);
-  color: #C9A84C;
+  background: rgba(74, 144, 217, 0.12);
+  border-color: rgba(74, 144, 217, 0.4);
+  color: #4a90d9;
 }
 
 /* Small label */

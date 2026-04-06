@@ -71,7 +71,7 @@ function buildTooltip(container: HTMLDivElement, d: SimNode) {
   const nameEl = document.createElement('div');
   nameEl.textContent = d.label;
   nameEl.style.cssText =
-    'font-weight:600;color:#C9A84C;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px';
+    'font-weight:600;color:#e8b84a;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px';
   container.appendChild(nameEl);
 
   const metaEl = document.createElement('div');
@@ -279,8 +279,9 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .data(simEdges)
         .join('line')
         .attr('stroke', theme.edgeColor)
-        .attr('stroke-opacity', 0.15)
+        .attr('stroke-opacity', theme.id === 'cosmos' ? 0.35 : 0.15)
         .attr('stroke-width', (d) => Math.max(0.3, d.weight * 0.15 * s.linkThickness))
+        .attr('stroke-dasharray', theme.id === 'cosmos' ? '8 4' : null)
         .attr('marker-end', s.showArrows ? 'url(#arrowhead)' : null);
       linkSelRef.current = linkSel;
 
@@ -395,7 +396,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
             .attr('stroke', curTheme.canvasBg)
             .attr('stroke-width', 0.5);
 
-          linkSel.attr('stroke', curTheme.edgeColor).attr('stroke-opacity', 0.15);
+          linkSel.attr('stroke', curTheme.edgeColor).attr('stroke-opacity', curTheme.id === 'cosmos' ? 0.35 : 0.15);
 
           if (searchQueryRef.current.trim()) {
             applySearchHighlight(searchQueryRef.current);
@@ -564,6 +565,8 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
           (d) => Math.max(0.3, d.weight * 0.15 * settings.linkThickness),
         );
         linkSel.attr('stroke', theme.edgeColor);
+        linkSel.attr('stroke-opacity', theme.id === 'cosmos' ? 0.35 : 0.15);
+        linkSel.attr('stroke-dasharray', theme.id === 'cosmos' ? '8 4' : null);
         linkSel.attr('marker-end', settings.showArrows ? 'url(#arrowhead)' : null);
       }
 

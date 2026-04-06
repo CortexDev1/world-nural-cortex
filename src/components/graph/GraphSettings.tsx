@@ -20,8 +20,8 @@ export interface GraphSettingsValues {
 }
 
 export const DEFAULT_SETTINGS: GraphSettingsValues = {
-  theme: 'dark',
-  showArrows: false,
+  theme: 'cosmos',
+  showArrows: true,
   textFadeThreshold: 1.0,
   nodeSize: 4,
   linkThickness: 1,
@@ -133,7 +133,19 @@ export function GraphSettings({ settings, onChange }: GraphSettingsProps) {
 
       <Section title="Filters">
         <div className="obsidian-toggle-row">
-          <span>Orphans</span>
+          <span>Show tags</span>
+          <button className="obsidian-toggle obsidian-toggle-on" aria-label="Show tags" />
+        </div>
+        <div className="obsidian-toggle-row">
+          <span>Attachments</span>
+          <button className="obsidian-toggle obsidian-toggle-on" aria-label="Attachments" />
+        </div>
+        <div className="obsidian-toggle-row">
+          <span>Existing files only</span>
+          <button className="obsidian-toggle obsidian-toggle-on" aria-label="Existing files only" />
+        </div>
+        <div className="obsidian-toggle-row">
+          <span>Show orphans</span>
           <button
             className={`obsidian-toggle ${settings.showOrphans ? 'obsidian-toggle-on' : ''}`}
             onClick={() => onChange({ showOrphans: !settings.showOrphans })}
@@ -155,14 +167,16 @@ export function GraphSettings({ settings, onChange }: GraphSettingsProps) {
             </button>
           ))}
         </div>
-        <div className="obsidian-domain-list">
+        <div className="obsidian-domain-list" style={{ marginTop: 8 }}>
           {domains.map(([domain, color]) => (
-            <div key={domain} className="obsidian-domain-row">
-              <span className="obsidian-domain-dot" style={{ background: color }} />
-              <span className="obsidian-domain-name">{DOMAIN_LABELS[domain]}</span>
+            <div key={domain} className="obsidian-domain-row" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '3px 0' }}>
+              <span style={{ width: 12, height: 12, borderRadius: 2, background: color, flexShrink: 0 }} />
+              <span style={{ flex: 1, fontSize: 12, color: 'var(--text-primary)' }}>{DOMAIN_LABELS[domain]}</span>
+              <button style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 14, lineHeight: 1, padding: '0 2px' }}>×</button>
             </div>
           ))}
         </div>
+        <button style={{ width: '100%', padding: '6px', marginTop: '8px', background: 'var(--input-bg)', border: '1px solid var(--panel-border)', borderRadius: 4, color: 'var(--text-muted)', fontSize: 11, cursor: 'pointer' }}>+ Add group</button>
       </Section>
 
       <Section title="Display">
@@ -173,6 +187,10 @@ export function GraphSettings({ settings, onChange }: GraphSettingsProps) {
             onClick={() => onChange({ showArrows: !settings.showArrows })}
             aria-label="Toggle arrows"
           />
+        </div>
+        <div className="obsidian-toggle-row">
+          <span>Synaptic pulses</span>
+          <button className="obsidian-toggle obsidian-toggle-on" aria-label="Synaptic pulses" />
         </div>
         <SliderRow
           label="Text fade threshold"
@@ -198,6 +216,7 @@ export function GraphSettings({ settings, onChange }: GraphSettingsProps) {
           step={0.1}
           onChange={(v) => onChange({ linkThickness: v })}
         />
+        <button style={{ width: '100%', padding: '6px', marginTop: '4px', background: 'var(--input-bg)', border: '1px solid var(--panel-border)', borderRadius: 4, color: 'var(--text-muted)', fontSize: 11, cursor: 'pointer' }}>Animate</button>
       </Section>
 
       <Section title="Forces">
@@ -233,6 +252,31 @@ export function GraphSettings({ settings, onChange }: GraphSettingsProps) {
           step={5}
           onChange={(v) => onChange({ linkDistance: v })}
         />
+      </Section>
+
+      <Section title="Neural Intelligence" defaultOpen={true}>
+        <div className="obsidian-toggle-row">
+          <span>AI-discovered links</span>
+          <button className="obsidian-toggle obsidian-toggle-on" aria-label="AI links" />
+        </div>
+        <div className="obsidian-toggle-row">
+          <span>Semantic clusters</span>
+          <button className="obsidian-toggle obsidian-toggle-on" aria-label="Clusters" />
+        </div>
+        <div className="obsidian-toggle-row">
+          <span>Knowledge gaps</span>
+          <button className="obsidian-toggle obsidian-toggle-on" aria-label="Gaps" />
+        </div>
+        <div className="obsidian-toggle-row">
+          <span>Temporal decay</span>
+          <button className="obsidian-toggle obsidian-toggle-on" aria-label="Decay" />
+        </div>
+      </Section>
+
+      <Section title="AI Actions" defaultOpen={false}>
+        <div style={{ padding: '8px 0', fontSize: '11px', color: 'var(--text-muted)' }}>
+          Run AI analysis on the knowledge graph
+        </div>
       </Section>
     </div>
   );
