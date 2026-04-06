@@ -224,6 +224,41 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
       // Background
       svg.append('rect').attr('class', 'bg-rect').attr('width', w).attr('height', h).attr('fill', themeNow.canvasBg);
 
+      // Galaxy star field background
+      const starField = svg.append('g').attr('class', 'star-field');
+      const starCount = 300;
+      for (let i = 0; i < starCount; i++) {
+        const sx = Math.random() * w;
+        const sy = Math.random() * h;
+        const sr = 0.3 + Math.random() * 1.2;
+        const so = 0.08 + Math.random() * 0.25;
+        starField.append('circle')
+          .attr('cx', sx).attr('cy', sy).attr('r', sr)
+          .attr('fill', '#ffffff').attr('opacity', so);
+      }
+
+      // Nebula glow — soft radial gradient at center
+      const nebulaGrad = defs.append('radialGradient')
+        .attr('id', 'nebula-glow').attr('cx', '50%').attr('cy', '50%').attr('r', '45%');
+      nebulaGrad.append('stop').attr('offset', '0%')
+        .attr('stop-color', themeNow.id === 'light' ? '#e8e0f0' : '#2a2040').attr('stop-opacity', 0.4);
+      nebulaGrad.append('stop').attr('offset', '40%')
+        .attr('stop-color', themeNow.id === 'light' ? '#f0ece0' : '#1a1830').attr('stop-opacity', 0.2);
+      nebulaGrad.append('stop').attr('offset', '100%')
+        .attr('stop-color', 'transparent').attr('stop-opacity', 0);
+      svg.append('ellipse').attr('class', 'nebula')
+        .attr('cx', w / 2).attr('cy', h / 2)
+        .attr('rx', w * 0.4).attr('ry', h * 0.38)
+        .attr('fill', 'url(#nebula-glow)');
+
+      // Node glow filter
+      const glowFilter = defs.append('filter').attr('id', 'node-glow')
+        .attr('x', '-80%').attr('y', '-80%').attr('width', '260%').attr('height', '260%');
+      glowFilter.append('feGaussianBlur').attr('stdDeviation', '3').attr('result', 'blur');
+      const glowMerge = glowFilter.append('feMerge');
+      glowMerge.append('feMergeNode').attr('in', 'blur');
+      glowMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
       const g = svg.append('g');
 
       // Zoom
@@ -261,6 +296,17 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .attr('stroke-width', (d) => Math.max(0.3, d.weight * 0.15 * s.linkThickness))
         .attr('marker-end', s.showArrows ? 'url(#arrowhead)' : null);
       linkSelRef.current = linkSel;
+
+      // Node glow layer (behind nodes — soft halos for hub nodes)
+      const glowG = g.append('g').attr('class', 'node-glows');
+      glowG
+        .selectAll('circle')
+        .data(simNodes.filter((d) => d.connections > 15))
+        .join('circle')
+        .attr('r', (d) => getNodeRadius(d.connections, s.nodeSize, d.type) * 2.5)
+        .attr('fill', (d) => getNodeColor(d, s.colorBy))
+        .attr('opacity', (d) => Math.min(0.15, 0.04 + d.connections * 0.001))
+        .attr('filter', 'url(#node-glow)');
 
       // Node layer
       const nodeG = g.append('g').attr('class', 'nodes');
@@ -396,6 +442,30 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         });
       nodeSel.call(drag);
 
+      // Radial force — hub nodes pulled to center, leaf nodes pushed outward
+      // This creates the galaxy/circular shape
+      const maxConn = Math.max(...simNodes.map((n) => n.connections), 1);
+      const galaxyRadius = Math.min(w, h) * 0.35;
+
+      function radialForce(alpha: number) {
+        const cx = w / 2;
+        const cy = h / 2;
+        for (const d of simNodes) {
+          if (d.x == null || d.y == null) continue;
+          const dx = d.x - cx;
+          const dy = d.y - cy;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          // Hub nodes (high connections) want to be near center
+          // Leaf nodes (low connections) want to be at galaxy edge
+          const hubness = d.connections / maxConn; // 0 = leaf, 1 = biggest hub
+          const targetDist = galaxyRadius * (1.0 - hubness * 0.7);
+          const strength = 0.015 * alpha;
+          const scale = (targetDist - dist) / dist * strength;
+          d.vx = (d.vx ?? 0) + dx * scale;
+          d.vy = (d.vy ?? 0) + dy * scale;
+        }
+      }
+
       // Simulation
       const simulation = d3
         .forceSimulation<SimNode>(simNodes)
@@ -421,10 +491,14 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
             .forceCollide<SimNode>()
             .radius((d) => getNodeRadius(d.connections, s.nodeSize, d.type) + 2),
         )
+        .force('radial', radialForce)
         .alphaDecay(0.02)
         .velocityDecay(0.4);
 
       simulationRef.current = simulation;
+
+      // Glow halo nodes reference for tick
+      const glowSel = glowG.selectAll('circle');
 
       simulation.on('tick', () => {
         linkSel
@@ -434,6 +508,10 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
           .attr('y2', (d) => (d.target as SimNode).y ?? 0);
 
         nodeSel.attr('cx', (d) => d.x ?? 0).attr('cy', (d) => d.y ?? 0);
+
+        // Move glow halos with their nodes
+        glowSel.attr('cx', (d: unknown) => ((d as SimNode).x ?? 0))
+               .attr('cy', (d: unknown) => ((d as SimNode).y ?? 0));
 
         labelSel
           .attr('x', (d) => (d.x ?? 0) + getNodeRadius(d.connections, settingsRef.current.nodeSize, d.type) + 4)
