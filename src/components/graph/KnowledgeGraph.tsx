@@ -221,21 +221,8 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .attr('fill', themeNow.edgeColor)
         .attr('opacity', 0.4);
 
-      // Background
-      svg.append('rect').attr('class', 'bg-rect').attr('width', w).attr('height', h).attr('fill', themeNow.canvasBg);
-
-      // Galaxy star field background
-      const starField = svg.append('g').attr('class', 'star-field');
-      const starCount = 300;
-      for (let i = 0; i < starCount; i++) {
-        const sx = Math.random() * w;
-        const sy = Math.random() * h;
-        const sr = 0.3 + Math.random() * 1.2;
-        const so = 0.08 + Math.random() * 0.25;
-        starField.append('circle')
-          .attr('cx', sx).attr('cy', sy).attr('r', sr)
-          .attr('fill', '#ffffff').attr('opacity', so);
-      }
+      // Background — semi-transparent so Three.js galaxy shows through
+      svg.append('rect').attr('class', 'bg-rect').attr('width', w).attr('height', h).attr('fill', themeNow.canvasBg).attr('opacity', 0.5);
 
       // Nebula glow — soft radial gradient at center
       const nebulaGrad = defs.append('radialGradient')
@@ -588,7 +575,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
       // Update background rect
       const svgEl = svgRef.current;
       if (svgEl) {
-        d3.select(svgEl).select('rect.bg-rect').attr('fill', theme.canvasBg);
+        d3.select(svgEl).select('rect.bg-rect').attr('fill', theme.canvasBg).attr('opacity', 0.5);
       }
 
       updateLabelVisibility(currentZoomRef.current);
@@ -596,7 +583,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
     }, [settings]);
 
     return (
-      <div ref={containerRef} className="relative w-full h-full">
+      <div ref={containerRef} style={{ position: 'absolute', inset: 0, zIndex: 1 }}>
         <svg ref={svgRef} className="w-full h-full block" />
         <div
           ref={tooltipRef}

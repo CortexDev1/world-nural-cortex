@@ -7,6 +7,7 @@ import { GraphSettings, DEFAULT_SETTINGS, type GraphSettingsValues } from './Gra
 import { NodeList } from './NodeList';
 import { NodeDetailPane } from './NodeDetailPane';
 import { getTheme } from '@/lib/themes';
+import { GalaxyBackground } from './GalaxyBackground';
 
 interface ObsidianLayoutProps {
   nodes: GraphNode[];
@@ -195,6 +196,7 @@ export function ObsidianLayout({ nodes, edges }: ObsidianLayoutProps) {
 
         {/* Graph canvas */}
         <div className="obsidian-canvas">
+          <GalaxyBackground theme={settings.theme} />
           {!leftOpen && (
             <button
               className="obsidian-panel-reopen obsidian-panel-reopen-left"
