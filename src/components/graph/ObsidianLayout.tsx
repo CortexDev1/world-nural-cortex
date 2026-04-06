@@ -6,6 +6,7 @@ import { KnowledgeGraph, type KnowledgeGraphHandle } from './KnowledgeGraph';
 import { GraphSettings, DEFAULT_SETTINGS, type GraphSettingsValues } from './GraphSettings';
 import { NodeList } from './NodeList';
 import { NodeDetailPane } from './NodeDetailPane';
+import { getTheme } from '@/lib/themes';
 
 interface ObsidianLayoutProps {
   nodes: GraphNode[];
@@ -79,6 +80,7 @@ export function ObsidianLayout({ nodes, edges }: ObsidianLayoutProps) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [detailNode, setDetailNode] = useState<GraphNode | null>(null);
   const graphRef = useRef<KnowledgeGraphHandle>(null);
+  const theme = getTheme(settings.theme);
 
   const handleSettingsChange = useCallback((patch: Partial<GraphSettingsValues>) => {
     setSettings((prev) => ({ ...prev, ...patch }));
@@ -121,7 +123,21 @@ export function ObsidianLayout({ nodes, edges }: ObsidianLayoutProps) {
   };
 
   return (
-    <div className="obsidian-root" style={{ position: 'fixed', inset: 0, zIndex: 100 }}>
+    <div
+      className="obsidian-root"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 100,
+        '--panel-bg': theme.panelBg,
+        '--panel-border': theme.panelBorder,
+        '--text-primary': theme.textPrimary,
+        '--text-muted': theme.textMuted,
+        '--input-bg': theme.inputBg,
+        '--input-border': theme.inputBorder,
+        '--hover-bg': theme.hoverBg,
+      } as React.CSSProperties}
+    >
       {/* Top bar */}
       <div className="obsidian-topbar">
         <span className="obsidian-topbar-title">Graph View</span>

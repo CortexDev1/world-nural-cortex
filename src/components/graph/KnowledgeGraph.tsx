@@ -3,7 +3,8 @@
 import { useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import * as d3 from 'd3';
 import type { GraphNode, GraphEdge, Domain } from '@/lib/types';
-import { DOMAIN_COLORS, DOMAIN_LABELS } from '@/lib/types';
+import { DOMAIN_LABELS } from '@/lib/types';
+import { getTheme, NODE_DOMAIN_COLORS, NODE_TYPE_COLORS } from '@/lib/themes';
 import { DEFAULT_SETTINGS, type GraphSettingsValues } from './GraphSettings';
 
 export interface KnowledgeGraphHandle {
@@ -55,17 +56,9 @@ function getNodeRadius(connections: number, sizeMultiplier: number, type?: Graph
 function getNodeColor(node: SimNode, colorBy: GraphSettingsValues['colorBy']): string {
   if (colorBy === 'none') return '#666666';
   if (colorBy === 'type') {
-    const typeColors: Record<GraphNode['type'], string> = {
-      skill: '#B8976A',    // bronze (matches fashion/warm)
-      agent: '#7BA686',    // sage
-      report: '#6B8FBF',   // steel blue
-      course: '#9B85B3',   // lavender
-      note: '#C4856A',     // terracotta
-      lecture: '#6A9BA6',  // teal
-    };
-    return typeColors[node.type];
+    return NODE_TYPE_COLORS[node.type] ?? '#666666';
   }
-  return DOMAIN_COLORS[node.domain] ?? '#666666';
+  return NODE_DOMAIN_COLORS[node.domain] ?? '#666666';
 }
 
 /** Build safe tooltip DOM — no innerHTML */
@@ -210,6 +203,8 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
       svg.selectAll('*').remove();
       svg.attr('width', w).attr('height', h);
 
+      const themeNow = getTheme(settingsRef.current.theme);
+
       // Arrow marker
       const defs = svg.append('defs');
       defs
@@ -223,11 +218,11 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .attr('orient', 'auto')
         .append('path')
         .attr('d', 'M0,-3L6,0L0,3')
-        .attr('fill', '#555')
+        .attr('fill', themeNow.edgeColor)
         .attr('opacity', 0.4);
 
       // Background
-      svg.append('rect').attr('width', w).attr('height', h).attr('fill', '#202020');
+      svg.append('rect').attr('class', 'bg-rect').attr('width', w).attr('height', h).attr('fill', themeNow.canvasBg);
 
       const g = svg.append('g');
 
@@ -253,6 +248,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .map((e) => ({ ...e }));
 
       const s = settingsRef.current;
+      const theme = getTheme(s.theme);
 
       // Edge layer
       const linkG = g.append('g').attr('class', 'links');
@@ -260,7 +256,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .selectAll<SVGLineElement, SimEdge>('line')
         .data(simEdges)
         .join('line')
-        .attr('stroke', '#4a4a4a')
+        .attr('stroke', theme.edgeColor)
         .attr('stroke-opacity', 0.15)
         .attr('stroke-width', (d) => Math.max(0.3, d.weight * 0.15 * s.linkThickness))
         .attr('marker-end', s.showArrows ? 'url(#arrowhead)' : null);
@@ -274,7 +270,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .join('circle')
         .attr('r', (d) => getNodeRadius(d.connections, s.nodeSize, d.type))
         .attr('fill', (d) => getNodeColor(d, s.colorBy))
-        .attr('stroke', '#202020')
+        .attr('stroke', theme.canvasBg)
         .attr('stroke-width', 0.5)
         .style('cursor', 'pointer');
       nodeSelRef.current = nodeSel;
@@ -288,7 +284,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         .text((d) => d.label)
         .attr('font-size', '10px')
         .attr('font-family', 'system-ui, -apple-system, sans-serif')
-        .attr('fill', '#999999')
+        .attr('fill', theme.labelColor)
         .attr('pointer-events', 'none')
         .style('opacity', currentZoomRef.current >= s.textFadeThreshold ? '1' : '0');
       labelSelRef.current = labelSel;
@@ -299,6 +295,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
       nodeSel
         .on('mouseenter', function (event: MouseEvent, d: SimNode) {
           const curSettings = settingsRef.current;
+          const curTheme = getTheme(curSettings.theme);
           const r = getNodeRadius(d.connections, curSettings.nodeSize, d.type);
 
           d3.select(this)
@@ -306,7 +303,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
             .transition()
             .duration(120)
             .attr('r', r * 1.4)
-            .attr('stroke', '#888')
+            .attr('stroke', curTheme.edgeHoverColor)
             .attr('stroke-width', 1);
 
           const connectedIds = new Set<string>();
@@ -323,7 +320,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
             .attr('stroke', (l) => {
               const src = typeof l.source === 'object' ? (l.source as SimNode).id : String(l.source);
               const tgt = typeof l.target === 'object' ? (l.target as SimNode).id : String(l.target);
-              return src === d.id || tgt === d.id ? '#888888' : '#4a4a4a';
+              return src === d.id || tgt === d.id ? curTheme.edgeHoverColor : curTheme.edgeColor;
             })
             .attr('stroke-opacity', (l) => {
               const src = typeof l.source === 'object' ? (l.source as SimNode).id : String(l.source);
@@ -356,15 +353,16 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         })
         .on('mouseleave', function (_event: MouseEvent, d: SimNode) {
           const curSettings = settingsRef.current;
+          const curTheme = getTheme(curSettings.theme);
           const r = getNodeRadius(d.connections, curSettings.nodeSize, d.type);
           d3.select(this)
             .transition()
             .duration(120)
             .attr('r', r)
-            .attr('stroke', '#202020')
+            .attr('stroke', curTheme.canvasBg)
             .attr('stroke-width', 0.5);
 
-          linkSel.attr('stroke', '#4a4a4a').attr('stroke-opacity', 0.15);
+          linkSel.attr('stroke', curTheme.edgeColor).attr('stroke-opacity', 0.15);
 
           if (searchQueryRef.current.trim()) {
             applySearchHighlight(searchQueryRef.current);
@@ -447,7 +445,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         const { width: nw, height: nh } = measure();
         dimensionsRef.current = { width: nw, height: nh };
         svg.attr('width', nw).attr('height', nh);
-        svg.select('rect[fill="#202020"]').attr('width', nw).attr('height', nh);
+        svg.select('rect.bg-rect').attr('width', nw).attr('height', nh);
         simulation.force(
           'center',
           d3.forceCenter(nw / 2, nh / 2).strength(settingsRef.current.centerForce / 100),
@@ -467,6 +465,8 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
     useEffect(() => {
       const sim = simulationRef.current;
       if (!sim) return;
+
+      const theme = getTheme(settings.theme);
 
       const linkForce = sim.force<d3.ForceLink<SimNode, SimEdge>>('link');
       if (linkForce) {
@@ -489,6 +489,7 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
       if (nodeSel) {
         nodeSel.attr('r', (d) => getNodeRadius(d.connections, settings.nodeSize, d.type));
         nodeSel.attr('fill', (d) => getNodeColor(d, settings.colorBy));
+        nodeSel.attr('stroke', theme.canvasBg);
       }
 
       const linkSel = linkSelRef.current;
@@ -497,7 +498,19 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
           'stroke-width',
           (d) => Math.max(0.3, d.weight * 0.15 * settings.linkThickness),
         );
+        linkSel.attr('stroke', theme.edgeColor);
         linkSel.attr('marker-end', settings.showArrows ? 'url(#arrowhead)' : null);
+      }
+
+      const labelSel = labelSelRef.current;
+      if (labelSel) {
+        labelSel.attr('fill', theme.labelColor);
+      }
+
+      // Update background rect
+      const svgEl = svgRef.current;
+      if (svgEl) {
+        d3.select(svgEl).select('rect.bg-rect').attr('fill', theme.canvasBg);
       }
 
       updateLabelVisibility(currentZoomRef.current);
@@ -509,17 +522,18 @@ const KnowledgeGraph = forwardRef<KnowledgeGraphHandle, KnowledgeGraphProps>(
         <svg ref={svgRef} className="w-full h-full block" />
         <div
           ref={tooltipRef}
+          className="graph-tooltip"
           style={{
             display: 'none',
             position: 'absolute',
-            background: 'rgba(30,30,30,0.95)',
-            border: '1px solid #3a3a3a',
+            background: getTheme(settings.theme).tooltipBg,
+            border: `1px solid ${getTheme(settings.theme).panelBorder}`,
             borderRadius: '6px',
             padding: '8px 10px',
             pointerEvents: 'none',
             zIndex: 50,
             fontSize: '12px',
-            color: '#ccc',
+            color: getTheme(settings.theme).textPrimary,
             maxWidth: '260px',
             boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
           }}

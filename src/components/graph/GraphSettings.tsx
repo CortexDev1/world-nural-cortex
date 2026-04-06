@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import type { Domain } from '@/lib/types';
 import { DOMAIN_COLORS, DOMAIN_LABELS } from '@/lib/types';
+import { THEMES, type ThemeId } from '@/lib/themes';
 
 export interface GraphSettingsValues {
+  theme: ThemeId;
   showArrows: boolean;
   textFadeThreshold: number;
   nodeSize: number;
@@ -18,6 +20,7 @@ export interface GraphSettingsValues {
 }
 
 export const DEFAULT_SETTINGS: GraphSettingsValues = {
+  theme: 'dark',
   showArrows: false,
   textFadeThreshold: 1.0,
   nodeSize: 4,
@@ -103,6 +106,31 @@ export function GraphSettings({ settings, onChange }: GraphSettingsProps) {
 
   return (
     <div className="obsidian-panel-inner">
+      <Section title="Theme" defaultOpen={true}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+          {(Object.keys(THEMES) as ThemeId[]).map((tid) => (
+            <button
+              key={tid}
+              onClick={() => onChange({ theme: tid })}
+              style={{
+                padding: '8px 0',
+                borderRadius: '6px',
+                border: settings.theme === tid ? '1px solid #888' : '1px solid transparent',
+                background: THEMES[tid].canvasBg,
+                color: THEMES[tid].textPrimary,
+                fontSize: '11px',
+                fontWeight: settings.theme === tid ? 600 : 400,
+                cursor: 'pointer',
+                transition: 'border-color 0.15s',
+                textTransform: 'capitalize',
+              }}
+            >
+              {THEMES[tid].label}
+            </button>
+          ))}
+        </div>
+      </Section>
+
       <Section title="Filters">
         <div className="obsidian-toggle-row">
           <span>Orphans</span>

@@ -10,13 +10,13 @@
   --color-glass: rgba(26, 22, 18, 0.6);
   --color-glass-border: rgba(201, 168, 76, 0.15);
 
-  --color-domain-ai: #6B8FBF;
-  --color-domain-fashion: #B8976A;
-  --color-domain-academic: #7BA686;
-  --color-domain-business: #9B85B3;
-  --color-domain-career: #C4856A;
-  --color-domain-engineering: #6A9BA6;
-  --color-domain-meta: #8B7A8E;
+  --color-domain-ai: #5B9BD5;
+  --color-domain-fashion: #D4A853;
+  --color-domain-academic: #5BB88C;
+  --color-domain-business: #9678B8;
+  --color-domain-career: #D4845A;
+  --color-domain-engineering: #4DBABA;
+  --color-domain-meta: #B87898;
 
   --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
@@ -139,8 +139,8 @@ body {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background: #202020;
-  color: #ccc;
+  background: var(--panel-bg, #202020);
+  color: var(--text-primary, #ccc);
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 13px;
   overflow: hidden;
@@ -154,21 +154,21 @@ body {
   height: 38px;
   min-height: 38px;
   padding: 0 14px;
-  background: #191919;
-  border-bottom: 1px solid #2d2d2d;
+  background: var(--panel-bg, #191919);
+  border-bottom: 1px solid var(--panel-border, #2d2d2d);
   flex-shrink: 0;
 }
 
 .obsidian-topbar-title {
   font-size: 13px;
   font-weight: 500;
-  color: #ccc;
+  color: var(--text-primary, #ccc);
   letter-spacing: 0.02em;
 }
 
 .obsidian-topbar-meta {
   font-size: 11px;
-  color: #555;
+  color: var(--text-muted, #555);
 }
 
 /* Body row: iconbar | left panel | canvas | right panel | strip */
@@ -186,8 +186,8 @@ body {
   align-items: center;
   width: 42px;
   min-width: 42px;
-  background: #191919;
-  border-right: 1px solid #2d2d2d;
+  background: var(--panel-bg, #191919);
+  border-right: 1px solid var(--panel-border, #2d2d2d);
   padding: 8px 0;
   gap: 2px;
   flex-shrink: 0;
@@ -202,13 +202,13 @@ body {
   border-radius: 5px;
   border: none;
   background: transparent;
-  color: #666;
+  color: var(--text-muted, #666);
   cursor: pointer;
   transition: color 0.12s, background 0.12s;
 }
 
 .obsidian-iconbtn:hover {
-  background: #2a2a2a;
+  background: var(--hover-bg, #2a2a2a);
   color: #aaa;
 }
 
@@ -224,8 +224,8 @@ body {
   align-items: center;
   width: 36px;
   min-width: 36px;
-  background: #191919;
-  border-left: 1px solid #2d2d2d;
+  background: var(--panel-bg, #191919);
+  border-left: 1px solid var(--panel-border, #2d2d2d);
   padding: 8px 0;
   flex-shrink: 0;
 }
@@ -239,13 +239,13 @@ body {
   border-radius: 4px;
   border: none;
   background: transparent;
-  color: #555;
+  color: var(--text-muted, #555);
   cursor: pointer;
   transition: color 0.12s, background 0.12s;
 }
 
 .obsidian-strip-btn:hover {
-  background: #2a2a2a;
+  background: var(--hover-bg, #2a2a2a);
   color: #aaa;
 }
 
@@ -253,19 +253,19 @@ body {
 .obsidian-panel {
   display: flex;
   flex-direction: column;
-  background: #1e1e1e;
+  background: var(--panel-bg, #1e1e1e);
   flex-shrink: 0;
   overflow: hidden;
 }
 
 .obsidian-panel-left {
   width: 270px;
-  border-right: 1px solid #2d2d2d;
+  border-right: 1px solid var(--panel-border, #2d2d2d);
 }
 
 .obsidian-panel-right {
   width: 290px;
-  border-left: 1px solid #2d2d2d;
+  border-left: 1px solid var(--panel-border, #2d2d2d);
 }
 
 .obsidian-panel-header {
@@ -273,7 +273,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 8px 10px;
-  border-bottom: 1px solid #2d2d2d;
+  border-bottom: 1px solid var(--panel-border, #2d2d2d);
   flex-shrink: 0;
   min-height: 36px;
 }
@@ -295,13 +295,13 @@ body {
   border-radius: 3px;
   border: none;
   background: transparent;
-  color: #555;
+  color: var(--text-muted, #555);
   cursor: pointer;
   transition: color 0.1s, background 0.1s;
 }
 
 .obsidian-collapse-btn:hover {
-  background: #2a2a2a;
+  background: var(--hover-bg, #2a2a2a);
   color: #aaa;
 }
 
@@ -316,15 +316,15 @@ body {
   justify-content: center;
   width: 20px;
   height: 40px;
-  background: #1e1e1e;
-  border: 1px solid #2d2d2d;
-  color: #555;
+  background: var(--panel-bg, #1e1e1e);
+  border: 1px solid var(--panel-border, #2d2d2d);
+  color: var(--text-muted, #555);
   cursor: pointer;
   transition: color 0.1s, background 0.1s;
 }
 
 .obsidian-panel-reopen:hover {
-  background: #2a2a2a;
+  background: var(--hover-bg, #2a2a2a);
   color: #aaa;
 }
 
@@ -360,10 +360,10 @@ body {
 
 /* Input */
 .obsidian-input {
-  background: #252525;
-  border: 1px solid #333;
+  background: var(--input-bg, #252525);
+  border: 1px solid var(--input-border, #333);
   border-radius: 4px;
-  color: #ccc;
+  color: var(--text-primary, #ccc);
   font-size: 12px;
   padding: 4px 8px;
   outline: none;
@@ -376,7 +376,7 @@ body {
 }
 
 .obsidian-input::placeholder {
-  color: #444;
+  color: var(--text-muted, #444);
 }
 
 /* Slider */
@@ -424,7 +424,7 @@ body {
   align-items: center;
   margin-bottom: 5px;
   font-size: 12px;
-  color: #888;
+  color: var(--text-muted, #888);
 }
 
 .obsidian-slider-value {
@@ -474,12 +474,12 @@ body {
   justify-content: space-between;
   margin-bottom: 10px;
   font-size: 12px;
-  color: #888;
+  color: var(--text-muted, #888);
 }
 
 /* Collapsible section */
 .obsidian-section {
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid var(--panel-border, #2a2a2a);
 }
 
 .obsidian-section-header {
@@ -490,7 +490,7 @@ body {
   padding: 8px 12px;
   background: transparent;
   border: none;
-  color: #888;
+  color: var(--text-muted, #888);
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
@@ -501,7 +501,7 @@ body {
 }
 
 .obsidian-section-header:hover {
-  background: #252525;
+  background: var(--hover-bg, #252525);
   color: #aaa;
 }
 
@@ -518,7 +518,7 @@ body {
   padding: 5px 12px;
   background: transparent;
   border: none;
-  color: #666;
+  color: var(--text-muted, #666);
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
@@ -529,14 +529,14 @@ body {
 }
 
 .obsidian-group-header:hover {
-  background: #252525;
+  background: var(--hover-bg, #252525);
   color: #aaa;
 }
 
 .obsidian-group-count {
   margin-left: auto;
   font-size: 10px;
-  color: #444;
+  color: var(--text-muted, #444);
 }
 
 .obsidian-node-row {
@@ -547,7 +547,7 @@ body {
   padding: 3px 12px 3px 22px;
   background: transparent;
   border: none;
-  color: #888;
+  color: var(--text-muted, #888);
   font-size: 12px;
   cursor: pointer;
   text-align: left;
@@ -557,8 +557,8 @@ body {
 }
 
 .obsidian-node-row:hover {
-  background: #272727;
-  color: #ccc;
+  background: var(--hover-bg, #272727);
+  color: var(--text-primary, #ccc);
 }
 
 .obsidian-node-active {
@@ -590,7 +590,7 @@ body {
   gap: 7px;
   padding: 2px 0;
   font-size: 11px;
-  color: #777;
+  color: var(--text-muted, #777);
 }
 
 .obsidian-domain-dot {
@@ -614,10 +614,10 @@ body {
 .obsidian-radio-btn {
   flex: 1;
   padding: 3px 6px;
-  background: #2a2a2a;
-  border: 1px solid #333;
+  background: var(--input-bg, #2a2a2a);
+  border: 1px solid var(--input-border, #333);
   border-radius: 4px;
-  color: #777;
+  color: var(--text-muted, #777);
   font-size: 11px;
   cursor: pointer;
   text-align: center;
@@ -625,7 +625,7 @@ body {
 }
 
 .obsidian-radio-btn:hover {
-  background: #333;
+  background: var(--hover-bg, #333);
   color: #aaa;
 }
 
@@ -638,7 +638,7 @@ body {
 /* Small label */
 .obsidian-label {
   font-size: 11px;
-  color: #666;
+  color: var(--text-muted, #666);
   margin-bottom: 5px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -652,18 +652,18 @@ body {
 
 .obsidian-panel-inner::-webkit-scrollbar-track,
 .obsidian-panel::-webkit-scrollbar-track {
-  background: #1e1e1e;
+  background: var(--panel-bg, #1e1e1e);
 }
 
 .obsidian-panel-inner::-webkit-scrollbar-thumb,
 .obsidian-panel::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--input-border, #333);
   border-radius: 2px;
 }
 
 .obsidian-panel-inner::-webkit-scrollbar-thumb:hover,
 .obsidian-panel::-webkit-scrollbar-thumb:hover {
-  background: #444;
+  background: var(--text-muted, #444);
 }
 
 /* ── Node Detail Pane ───────────────────────── */
@@ -674,9 +674,9 @@ body {
   right: 0;
   width: 340px;
   height: 100%;
-  background: rgba(22, 20, 18, 0.95);
+  background: var(--panel-bg, rgba(22, 20, 18, 0.95));
   backdrop-filter: blur(20px);
-  border-left: 1px solid #2d2d2d;
+  border-left: 1px solid var(--panel-border, #2d2d2d);
   z-index: 20;
   display: flex;
   flex-direction: column;
@@ -696,7 +696,7 @@ body {
   right: 12px;
   background: transparent;
   border: none;
-  color: #555;
+  color: var(--text-muted, #555);
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -704,7 +704,7 @@ body {
 }
 .node-detail-close:hover {
   color: #aaa;
-  background: #2a2a2a;
+  background: var(--hover-bg, #2a2a2a);
 }
 
 .node-detail-title {
@@ -748,22 +748,22 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 10px 4px;
-  background: #1e1e1e;
+  background: var(--input-bg, #1e1e1e);
   border-radius: 6px;
-  border: 1px solid #2a2a2a;
+  border: 1px solid var(--panel-border, #2a2a2a);
 }
 
 .node-detail-stat-value {
   font-size: 20px;
   font-weight: 700;
-  color: #ddd;
+  color: var(--text-primary, #ddd);
 }
 
 .node-detail-stat-label {
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #666;
+  color: var(--text-muted, #666);
   margin-top: 2px;
 }
 
@@ -775,9 +775,9 @@ body {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #666;
+  color: var(--text-muted, #666);
   padding: 6px 0;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid var(--panel-border, #2a2a2a);
   margin-bottom: 6px;
   display: flex;
   justify-content: space-between;
@@ -802,7 +802,7 @@ body {
   padding: 5px 4px;
   background: transparent;
   border: none;
-  color: #bbb;
+  color: var(--text-primary, #bbb);
   font-size: 12px;
   cursor: pointer;
   border-radius: 4px;
@@ -812,8 +812,8 @@ body {
 }
 
 .node-detail-list-item:hover {
-  background: #252525;
-  color: #ddd;
+  background: var(--hover-bg, #252525);
+  color: var(--text-primary, #ddd);
 }
 
 .node-detail-dot {
@@ -832,7 +832,7 @@ body {
 
 .node-detail-list-type {
   font-size: 10px;
-  color: #555;
+  color: var(--text-muted, #555);
   flex-shrink: 0;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -859,7 +859,7 @@ body {
 }
 
 .node-detail-rel-name {
-  color: #888;
+  color: var(--text-muted, #888);
   text-transform: capitalize;
 }
 
